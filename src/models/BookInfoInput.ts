@@ -4,7 +4,7 @@ export interface BookInfoInput {
   year: string;
   image: string;
   epub: string;
-  genreId: number;
+  genreId: string;
   synopsis: string;
-  userId: number;
+  userId: string;
 }
