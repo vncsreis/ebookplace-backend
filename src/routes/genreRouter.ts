@@ -14,7 +14,7 @@ genreRouter.get('/', async (req, res) => {
 
 genreRouter.get('/:id', async (req, res) => {
   try {
-    const genre = await genreController.getGenreById(+req.params.id);
+    const genre = await genreController.getGenreById(req.params.id);
     res.send(JSON.stringify(genre));
   } catch (e) {
     res.status(400).send(JSON.stringify(e));
@@ -33,7 +33,7 @@ genreRouter.post('/', async (req, res) => {
 genreRouter.put('/:id', async (req, res) => {
   try {
     const updatedGenre = await genreController.updateGenre(
-      +req.params.id,
+      req.params.id,
       req.body,
     );
     res.send(JSON.stringify(updatedGenre));
@@ -44,7 +44,7 @@ genreRouter.put('/:id', async (req, res) => {
 
 genreRouter.delete('/:id', async (req, res) => {
   try {
-    const deletedGenre = await genreController.deleteGenre(+req.params.id);
+    const deletedGenre = await genreController.deleteGenre(req.params.id);
     res.send(JSON.stringify(deletedGenre));
   } catch (e) {
     res.status(400).send(JSON.stringify(e));
