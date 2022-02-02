@@ -1,56 +1,43 @@
 import { Router } from 'express';
 import { bookController } from '../controllers/BookController';
+import multer, { MulterError } from 'multer';
+import path from 'path';
+import mime from 'mime';
+import { v4 as uuidv4 } from 'uuid';
+import { BookInfoInput } from '../models/BookInfoInput';
+
+const storage = multer.diskStorage({
+  destination: path.join(__dirname, '../../uploads'),
+  filename: (req, file, next) => {
+    next(null, `${Date.now()}${uuidv4()}.${mime.extension(file.mimetype)}`);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 15728640,
+  },
+});
 
 export const bookRouter = Router();
 
-bookRouter.get('/', async (req, res) => {
-  try {
-    const books = await bookController.getBooks();
-    res.send(JSON.stringify(books));
-  } catch (e) {
-    res.status(400).send(JSON.stringify({ error: e }));
-  }
-});
+bookRouter.get('/', bookController.getBooks);
 
-bookRouter.get('/:id', async (req, res) => {
-  try {
-    const book = await bookController.getBookById(req.params.id);
-    res.send(JSON.stringify(book));
-  } catch (e) {
-    res.status(400).send(JSON.stringify({ error: e }));
-  }
-});
+bookRouter.get('/:id', bookController.getBookById);
 
-bookRouter.get('/user/:userId', async (req, res) => {
-  try {
-    const booksByUser = await bookController.getBooksByUserId(
-      req.params.userId,
-    );
-    res.send(JSON.stringify(booksByUser));
-  } catch (e) {
-    res.status(400).send(JSON.stringify({ error: e }));
-  }
-});
+bookRouter.get('/user/:userId', bookController.getBooksByUserId);
 
-bookRouter.get('/genre/:genreId', async (req, res) => {
-  try {
-    const booksByGenre = await bookController.getBooksByGenreId(
-      req.params.genreId,
-    );
-    res.send(JSON.stringify(booksByGenre));
-  } catch (e) {
-    res.status(400).send(JSON.stringify({ error: e }));
-  }
-});
+bookRouter.get('/user/:genreId', bookController.getBooksByGenreId);
 
-bookRouter.post('/', async (req, res) => {
-  try {
-    const createdBook = await bookController.createBook(req.body);
-    res.send(JSON.stringify(createdBook));
-  } catch (e) {
-    res.status(400).send(JSON.stringify({ error: e }));
-  }
-});
+bookRouter.post(
+  '/',
+  upload.fields([
+    { name: 'epub', maxCount: 1 },
+    { name: 'image', maxCount: 1 },
+  ]),
+  bookController.createBook,
+);
 
 bookRouter.delete('/:id', async (req, res) => {
   try {
