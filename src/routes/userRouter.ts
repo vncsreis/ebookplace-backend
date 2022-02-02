@@ -15,7 +15,7 @@ userRouter.get('/', async (req, res) => {
 
 userRouter.get('/:id', async (req, res) => {
   try {
-    const user = await userController.getUserById(+req.params.id);
+    const user = await userController.getUserById(req.params.id);
     res.send(JSON.stringify(user));
   } catch (e) {
     res.status(400).send(JSON.stringify(e));
@@ -33,7 +33,7 @@ userRouter.post('/', validateCreateUser, async (req, res) => {
 
 userRouter.delete('/:id', async (req, res) => {
   try {
-    const deletedUser = await userController.deleteUser(+req.params.id);
+    const deletedUser = await userController.deleteUser(req.params.id);
     res.send(JSON.stringify(deletedUser));
   } catch (e) {
     res.status(400).send(JSON.stringify(e));
@@ -43,7 +43,7 @@ userRouter.delete('/:id', async (req, res) => {
 userRouter.put('/:id', async (req, res) => {
   try {
     const updatedUser = await userController.updateUser(
-      +req.params.id,
+      req.params.id,
       req.body,
     );
     res.send(JSON.stringify(updatedUser));

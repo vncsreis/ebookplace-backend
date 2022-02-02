@@ -14,7 +14,7 @@ bookRouter.get('/', async (req, res) => {
 
 bookRouter.get('/:id', async (req, res) => {
   try {
-    const book = await bookController.getBookById(+req.params.id);
+    const book = await bookController.getBookById(req.params.id);
     res.send(JSON.stringify(book));
   } catch (e) {
     res.status(400).send(JSON.stringify({ error: e }));
@@ -24,7 +24,7 @@ bookRouter.get('/:id', async (req, res) => {
 bookRouter.get('/user/:userId', async (req, res) => {
   try {
     const booksByUser = await bookController.getBooksByUserId(
-      +req.params.userId,
+      req.params.userId,
     );
     res.send(JSON.stringify(booksByUser));
   } catch (e) {
@@ -35,7 +35,7 @@ bookRouter.get('/user/:userId', async (req, res) => {
 bookRouter.get('/genre/:genreId', async (req, res) => {
   try {
     const booksByGenre = await bookController.getBooksByGenreId(
-      +req.params.genreId,
+      req.params.genreId,
     );
     res.send(JSON.stringify(booksByGenre));
   } catch (e) {
@@ -54,7 +54,7 @@ bookRouter.post('/', async (req, res) => {
 
 bookRouter.delete('/:id', async (req, res) => {
   try {
-    const deletedBook = await bookController.deleteBook(+req.params.id);
+    const deletedBook = await bookController.deleteBook(req.params.id);
     res.send(JSON.stringify(deletedBook));
   } catch (e) {
     res.status(400).send(JSON.stringify({ error: e }));
@@ -64,7 +64,7 @@ bookRouter.delete('/:id', async (req, res) => {
 bookRouter.put('/:id', async (req, res) => {
   try {
     const updatedBook = await bookController.updateBook(
-      +req.params.id,
+      req.params.id,
       req.body,
     );
     res.send(JSON.stringify(updatedBook));
