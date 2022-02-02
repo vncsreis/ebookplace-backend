@@ -13,7 +13,7 @@ export function validateCreateUser(
   if (!validator.isEmail(email)) {
     errors.push('Invalid e-mail');
   }
-  if (!validator.isAlpha(name)) {
+  if (!validator.isEmpty(name)) {
     errors.push('Invalid name');
   }
 
