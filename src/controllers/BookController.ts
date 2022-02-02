@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../../prisma/client';
 import { BookInfoInput } from '../models/BookInfoInput';
 
@@ -7,7 +8,7 @@ class BookController {
     return books;
   }
 
-  async getBookById(id: number) {
+  async getBookById(id: string) {
     const book = await prisma.book.findUnique({
       where: {
         id,
@@ -16,7 +17,7 @@ class BookController {
     return book;
   }
 
-  async getBooksByUserId(userId: number) {
+  async getBooksByUserId(userId: string) {
     const userBooks = await prisma.book.findMany({
       where: {
         userId,
@@ -25,7 +26,7 @@ class BookController {
     return userBooks;
   }
 
-  async getBooksByGenreId(genreId: number) {
+  async getBooksByGenreId(genreId: string) {
     const genreBooks = await prisma.book.findMany({
       where: {
         genreId,
@@ -38,6 +39,7 @@ class BookController {
     const createdBook = await prisma.book.create({
       data: {
         ...book,
+        id: uuidv4(),
         favourite: false,
         addedAt: new Date(),
         lastRead: new Date(),
@@ -46,7 +48,7 @@ class BookController {
     return createdBook;
   }
 
-  async deleteBook(id: number) {
+  async deleteBook(id: string) {
     const deletedBook = await prisma.book.delete({
       where: {
         id,
@@ -55,7 +57,7 @@ class BookController {
     return deletedBook;
   }
 
-  async updateBook(id: number, newBook: BookInfoInput) {
+  async updateBook(id: string, newBook: BookInfoInput) {
     const oldBook = await prisma.book.findUnique({ where: { id } });
     const updatedBook = await prisma.book.update({
       where: {

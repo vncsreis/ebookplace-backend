@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../../prisma/client';
 import { UserInfoInput } from '../models/UserInfoInput';
 
@@ -7,7 +8,7 @@ class UserController {
     return users;
   }
 
-  async getUserById(id: number) {
+  async getUserById(id: string) {
     const user = await prisma.user.findUnique({
       where: {
         id,
@@ -19,13 +20,14 @@ class UserController {
   async createUser(user: UserInfoInput) {
     const createdUser = await prisma.user.create({
       data: {
+        id: uuidv4(),
         ...user,
       },
     });
     return createdUser;
   }
 
-  async updateUser(id: number, newUser: UserInfoInput) {
+  async updateUser(id: string, newUser: UserInfoInput) {
     const updatedUser = await prisma.user.update({
       where: {
         id,
@@ -37,7 +39,7 @@ class UserController {
     return updatedUser;
   }
 
-  async deleteUser(id: number) {
+  async deleteUser(id: string) {
     const deletedUser = await prisma.user.delete({ where: { id } });
     return deletedUser;
   }
