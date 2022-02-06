@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { UserInfoInput } from '../models/UserInfoInput';
+import { UserCreateInfo } from '../models/UserInfoInput';
 import validator from 'validator';
 
 export function validateCreateUser(
-  req: Request<any, any, UserInfoInput>,
+  req: Request<any, any, UserCreateInfo>,
   res: Response,
   next: NextFunction,
 ) {

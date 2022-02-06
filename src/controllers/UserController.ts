@@ -1,47 +1,106 @@
 import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../../prisma/client';
-import { UserInfoInput } from '../models/UserInfoInput';
+import bcrypt from 'bcrypt';
+import { UserCreateInfo, UserUpdateInfo } from '../models/UserInfoInput';
+import { Request, Response } from 'express';
 
 class UserController {
-  async getUsers() {
-    const users = await prisma.user.findMany();
-    return users;
+  async getUsers(req: Request, res: Response) {
+    try {
+      const users = await prisma.user.findMany();
+      res.status(200).json(users);
+    } catch (e) {
+      res.status(400).json({ error: e });
+    }
   }
 
-  async getUserById(id: string) {
-    const user = await prisma.user.findUnique({
-      where: {
-        id,
-      },
-    });
-    return user;
+  async getUserById(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const user = await prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
+      res.status(200).json(user);
+    } catch (e) {
+      res.status(400).json({ error: e });
+    }
   }
 
-  async createUser(user: UserInfoInput) {
-    const createdUser = await prisma.user.create({
-      data: {
-        id: uuidv4(),
-        ...user,
-      },
-    });
-    return createdUser;
+  async createUser(req: Request, res: Response) {
+    try {
+      const user: UserCreateInfo = req.body;
+      const salt = await bcrypt.genSalt(10);
+
+      const hashedPassword = await bcrypt.hash(user.password, salt);
+
+      const createdUser = await prisma.user.create({
+        data: {
+          id: uuidv4(),
+          ...user,
+          password: hashedPassword,
+        },
+      });
+      res.status(200).json(createdUser);
+    } catch (e) {
+      res.status(400).json({ error: e });
+    }
   }
 
-  async updateUser(id: string, newUser: UserInfoInput) {
-    const updatedUser = await prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        ...newUser,
-      },
-    });
-    return updatedUser;
+  async updateUser(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const newUser: UserUpdateInfo = req.body;
+
+      const updatedUser = await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          ...newUser,
+        },
+      });
+      res.status(200).json(updatedUser);
+    } catch (e) {
+      res.status(400).json({ error: e });
+    }
   }
 
-  async deleteUser(id: string) {
-    const deletedUser = await prisma.user.delete({ where: { id } });
-    return deletedUser;
+  async updatePassword(req: Request, res: Response) {
+    console.log('called');
+    try {
+      const { id } = req.params;
+      const newPassword = req.body.password;
+
+      const salt = await bcrypt.genSalt(10);
+      const newHashedPassword = await bcrypt.hash(newPassword, salt);
+
+      const oldUser = await prisma.user.findUnique({ where: { id } });
+
+      const updatedPasswordUser = await prisma.user.update({
+        where: { id },
+        data: {
+          ...oldUser,
+          password: newHashedPassword,
+        },
+      });
+
+      res.status(200).json(updatedPasswordUser);
+    } catch (e) {
+      res.status(400).json({ error: e });
+    }
+  }
+
+  async deleteUser(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const deletedUser = await prisma.user.delete({ where: { id } });
+      return deletedUser;
+    } catch (e) {
+      res.status(400).json({ error: e });
+    }
   }
 }
 
