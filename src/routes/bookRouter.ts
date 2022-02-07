@@ -4,7 +4,6 @@ import multer, { MulterError } from 'multer';
 import path from 'path';
 import mime from 'mime';
 import { v4 as uuidv4 } from 'uuid';
-import { BookInfoInput } from '../models/BookInfoInput';
 
 const storage = multer.diskStorage({
   destination: path.join(__dirname, '../../uploads'),
