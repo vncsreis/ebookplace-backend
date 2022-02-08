@@ -7,7 +7,7 @@ import { requireLogin } from '../middleware/requireLogin';
 
 export const router = Router();
 
-router.use('/user', requireLogin, userRouter);
+router.use('/user', userRouter);
 
 router.use('/book', requireLogin, bookRouter);
 
