@@ -6,7 +6,7 @@ export interface UserCreateInfo {
 }
 
 export interface UserUpdateInfo {
-  name: string;
-  email: string;
-  picture: string;
+  name?: string;
+  email?: string;
+  picture?: string;
 }

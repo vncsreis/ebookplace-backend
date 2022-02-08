@@ -34,7 +34,12 @@ userRouter.post(
   userController.createUser,
 );
 
-userRouter.put('/:id', requireLogin, userController.updateUser);
+userRouter.put(
+  '/:id',
+  requireLogin,
+  upload.fields([{ name: 'picture', maxCount: 1 }]),
+  userController.updateUser,
+);
 
 userRouter.put('/:id/password', requireLogin, userController.updatePassword);
 
