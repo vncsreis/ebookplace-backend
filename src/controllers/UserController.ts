@@ -11,7 +11,7 @@ class UserController {
       const users = await prisma.user.findMany();
       res.status(200).json(users);
     } catch (e) {
-      res.status(400).json({ error: e });
+      res.status(400).json({ error: getErrorMessage(e) });
     }
   }
 
@@ -25,7 +25,7 @@ class UserController {
       });
       res.status(200).json(user);
     } catch (e) {
-      res.status(400).json({ error: e });
+      res.status(400).json({ error: getErrorMessage(e) });
     }
   }
 
@@ -47,7 +47,7 @@ class UserController {
       });
       res.status(200).json(createdUser);
     } catch (e) {
-      res.status(400).json({ error: e });
+      res.status(400).json({ error: getErrorMessage(e) });
     }
   }
 
@@ -100,7 +100,7 @@ class UserController {
 
       res.status(200).json(updatedPasswordUser);
     } catch (e) {
-      res.status(400).json({ error: e });
+      res.status(400).json({ error: getErrorMessage(e) });
     }
   }
 
@@ -111,7 +111,7 @@ class UserController {
       const deletedUser = await prisma.user.delete({ where: { id } });
       return deletedUser;
     } catch (e) {
-      res.status(400).json({ error: e });
+      res.status(400).json({ error: getErrorMessage(e) });
     }
   }
 }
