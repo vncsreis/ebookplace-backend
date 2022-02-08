@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../../prisma/client';
 import dotenv from 'dotenv-safe';
+import { getErrorMessage } from '../utilities/getErrorMessage';
 
 class LoginController {
   async login(req: Request, res: Response) {
@@ -38,7 +39,7 @@ class LoginController {
         res.status(400).json({ error: 'Invalid E-mail or password' });
       }
     } catch (e) {
-      res.status(400).json({ error: e });
+      res.status(400).json({ error: getErrorMessage(e) });
     }
   }
 }

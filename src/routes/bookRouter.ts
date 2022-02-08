@@ -38,23 +38,13 @@ bookRouter.post(
   bookController.createBook,
 );
 
-bookRouter.delete('/:id', async (req, res) => {
-  try {
-    const deletedBook = await bookController.deleteBook(req.params.id);
-    res.send(JSON.stringify(deletedBook));
-  } catch (e) {
-    res.status(400).send(JSON.stringify({ error: e }));
-  }
-});
+bookRouter.delete('/:id', bookController.deleteBook);
 
-bookRouter.put('/:id', async (req, res) => {
-  try {
-    const updatedBook = await bookController.updateBook(
-      req.params.id,
-      req.body,
-    );
-    res.send(JSON.stringify(updatedBook));
-  } catch (e) {
-    res.status(400).send(JSON.stringify({ error: e }));
-  }
-});
+bookRouter.put(
+  '/:id',
+  upload.fields([
+    { name: 'epub', maxCount: 1 },
+    { name: 'image', maxCount: 1 },
+  ]),
+  bookController.updateBook,
+);
