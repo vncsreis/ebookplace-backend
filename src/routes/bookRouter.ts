@@ -10,13 +10,18 @@ const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     let pathType = '';
     let type = mime.extension(file.mimetype);
-    console.log(file.filename, type);
     if (type === 'epub') {
       pathType = 'epub';
     }
     let dir = path.join(__dirname, '../../uploads', pathType);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
+    let ok = false;
+    fs.access(dir, fs.constants.F_OK, (err) => {
+      ok = true;
+    });
+    if (ok) {
+      fs.mkdir(dir, { recursive: true }, (err) => {
+        if (err) throw err;
+      });
     }
     callback(null, dir);
   },
