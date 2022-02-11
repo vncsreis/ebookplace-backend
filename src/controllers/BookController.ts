@@ -53,6 +53,26 @@ class BookController {
     }
   }
 
+  async toggleBookFavourite(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const bookToUpdate = await prisma.book.findUnique({ where: { id } });
+      if (!bookToUpdate) {
+        return res.status(400).json({ error: 'Book not found' });
+      }
+      const newFavouriteValue = !bookToUpdate.favourite;
+      const updatedBook = await prisma.book.update({
+        where: { id },
+        data: {
+          favourite: newFavouriteValue,
+        },
+      });
+      return res.status(200).json(updatedBook);
+    } catch (e) {
+      return res.status(400).json({ error: getErrorMessage(e) });
+    }
+  }
+
   // TODO: validate request body
   async createBook(req: Request, res: Response) {
     try {

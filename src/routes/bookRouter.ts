@@ -25,6 +25,8 @@ bookRouter.get('/', bookController.getBooks);
 
 bookRouter.get('/:id', bookController.getBookById);
 
+bookRouter.get('/:id/favourite', bookController.toggleBookFavourite);
+
 bookRouter.get('/user/:userId', bookController.getBooksByUserId);
 
 bookRouter.get('/user/:genreId', bookController.getBooksByGenreId);
