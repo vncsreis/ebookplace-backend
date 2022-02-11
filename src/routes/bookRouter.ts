@@ -4,9 +4,22 @@ import multer, { MulterError } from 'multer';
 import path from 'path';
 import mime from 'mime';
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
 
 const storage = multer.diskStorage({
-  destination: path.join(__dirname, '../../uploads'),
+  destination: (req, file, callback) => {
+    let pathType = '';
+    let type = mime.extension(file.mimetype);
+    console.log(file.filename, type);
+    if (type === 'epub') {
+      pathType = 'epub';
+    }
+    let dir = path.join(__dirname, '../../uploads', pathType);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+    callback(null, dir);
+  },
   filename: (req, file, next) => {
     next(null, `${Date.now()}${uuidv4()}.${mime.extension(file.mimetype)}`);
   },
@@ -29,7 +42,9 @@ bookRouter.get('/:id/favourite', bookController.toggleBookFavourite);
 
 bookRouter.get('/user/:userId', bookController.getBooksByUserId);
 
-bookRouter.get('/user/:genreId', bookController.getBooksByGenreId);
+bookRouter.get('/genre/:genreId', bookController.getBooksByGenreId);
+
+bookRouter.get('/user/:userId/:genreId', bookController.getBooksByUserId);
 
 bookRouter.post(
   '/',
