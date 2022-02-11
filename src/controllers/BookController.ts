@@ -54,9 +54,10 @@ class BookController {
 
   async getBooksByGenreId(req: Request, res: Response) {
     try {
+      const { genreId } = req.params;
       const genreBooks = await prisma.book.findMany({
         where: {
-          userId: req.params.genreId,
+          genreId,
         },
       });
       if (genreBooks) {
@@ -68,6 +69,27 @@ class BookController {
       }
     } catch (e) {
       return res.status(400).json({ error: getErrorMessage(e) });
+    }
+  }
+
+  async getUserBooksByGenreId(req: Request, res: Response) {
+    try {
+      const { userId, genreId } = req.params;
+      const genreUserBooks = await prisma.book.findMany({
+        where: {
+          genreId,
+          userId,
+        },
+      });
+      if (genreUserBooks) {
+        return res.status(200).json(genreUserBooks);
+      } else {
+        return res
+          .status(200)
+          .json({ message: 'No books of specified genre and user found' });
+      }
+    } catch (e) {
+      return res.status(200).json({ error: getErrorMessage(e) });
     }
   }
 
