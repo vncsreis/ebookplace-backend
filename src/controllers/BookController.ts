@@ -8,7 +8,11 @@ class BookController {
   async getBooks(req: Request, res: Response) {
     try {
       const books = await prisma.book.findMany();
-      res.send(JSON.stringify(books));
+      if (books) {
+        res.status(200).json(books);
+      } else {
+        res.status(200).json({ message: 'No books found' });
+      }
     } catch (e) {
       res.status(400).json({ error: getErrorMessage(e) });
     }
@@ -21,7 +25,11 @@ class BookController {
           id: req.params.id,
         },
       });
-      return res.send(JSON.stringify(book));
+      if (book) {
+        return res.status(200).json(book);
+      } else {
+        return res.status(200).json({ message: 'Book not found' });
+      }
     } catch (e) {
       res.status(400).json({ error: getErrorMessage(e) });
     }
@@ -34,7 +42,11 @@ class BookController {
           userId: req.params.userId,
         },
       });
-      return res.send(JSON.stringify(userBooks));
+      if (userBooks) {
+        return res.status(200).json(userBooks);
+      } else {
+        return res.status(200).json({ message: 'No books found' });
+      }
     } catch (e) {
       res.status(400).json({ error: getErrorMessage(e) });
     }
@@ -47,9 +59,15 @@ class BookController {
           userId: req.params.genreId,
         },
       });
-      return res.send(JSON.stringify(genreBooks));
+      if (genreBooks) {
+        return res.status(200).json(genreBooks);
+      } else {
+        return res
+          .status(200)
+          .json({ message: 'No books of specified genre found' });
+      }
     } catch (e) {
-      return res.status(400).send(JSON.stringify({ error: e }));
+      return res.status(400).json({ error: getErrorMessage(e) });
     }
   }
 
@@ -90,7 +108,7 @@ class BookController {
           lastRead: new Date(),
         },
       });
-      return res.send(JSON.stringify(createdBook));
+      return res.status(200).json(createdBook);
     } catch (e) {
       res.status(400).json({ error: getErrorMessage(e) });
     }
@@ -104,7 +122,11 @@ class BookController {
           id,
         },
       });
-      res.status(200).json(deletedBook);
+      if (deletedBook) {
+        return res.status(200).json(deletedBook);
+      } else {
+        return res.status(200).json({ message: 'Book not found' });
+      }
     } catch (e) {
       res.status(400).json({ error: getErrorMessage(e) });
     }
@@ -133,7 +155,11 @@ class BookController {
           ...newBook,
         },
       });
-      return updatedBook;
+      if (updatedBook) {
+        return res.status(200).json(updatedBook);
+      } else {
+        return res.status(200).json({ message: 'Book not found' });
+      }
     } catch (e) {
       res.status(400).json({ error: getErrorMessage(e) });
     }
