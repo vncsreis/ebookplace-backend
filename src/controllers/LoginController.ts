@@ -31,8 +31,8 @@ class LoginController {
       );
 
       if (correctPassword) {
-        const token = jwt.sign(email, env.required.JWTSECRET, {
-          expiresIn: '1d',
+        const token = jwt.sign({ email }, env.required.JWTSECRET, {
+          expiresIn: '1D',
         });
         res.status(200).json({ token });
       } else {
