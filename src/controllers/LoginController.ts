@@ -12,7 +12,7 @@ class LoginController {
       const { email, password } = req.body;
 
       if (!email || !password) {
-        res.status(400).json({ error: 'Invalid E-mail or password' });
+        return res.status(400).json({ error: 'Invalid E-mail or password' });
       }
 
       const userOnDB = await prisma.user.findUnique({
@@ -22,7 +22,7 @@ class LoginController {
       });
 
       if (!userOnDB) {
-        res.status(400).json({ error: 'User not found' });
+        return res.status(400).json({ error: 'User not found' });
       }
 
       const correctPassword = await bcrypt.compare(
@@ -34,12 +34,20 @@ class LoginController {
         const token = jwt.sign({ email }, env.required.JWTSECRET, {
           expiresIn: '1D',
         });
-        res.status(200).json({ token });
+        return res
+          .status(200)
+          .json({
+            token,
+            email,
+            picture: userOnDB.picture,
+            id: userOnDB.id,
+            name: userOnDB.name,
+          });
       } else {
-        res.status(400).json({ error: 'Invalid E-mail or password' });
+        return res.status(400).json({ error: 'Invalid E-mail or password' });
       }
     } catch (e) {
-      res.status(400).json({ error: getErrorMessage(e) });
+      return res.status(400).json({ error: getErrorMessage(e) });
     }
   }
 }
