@@ -17,7 +17,7 @@ router.use('/genre', requireLogin, genreRouter);
 
 router.use('/login', loginRouter);
 
-router.get('/static/:id', requireLogin, (req, res) => {
+router.get('/static/:id', (req, res) => {
   try {
     res.sendFile(path.join(__dirname, '..', '..', 'uploads', req.params.id));
   } catch (e) {
@@ -25,7 +25,7 @@ router.get('/static/:id', requireLogin, (req, res) => {
   }
 });
 
-router.get('/static/epub/:id', requireLogin, (req, res) => {
+router.get('/static/epub/:id', (req, res) => {
   try {
     res.sendFile(
       path.join(__dirname, '..', '..', 'uploads', 'epub', req.params.id),
