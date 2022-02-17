@@ -26,7 +26,10 @@ class BookController {
         },
       });
       if (book) {
-        return res.status(200).json(book);
+        const genre = await prisma.genre.findUnique({
+          where: { id: book.genreId },
+        });
+        return res.status(200).json({ ...book, genre: genre?.genre });
       } else {
         return res.status(200).json({ message: 'Book not found' });
       }
@@ -43,7 +46,15 @@ class BookController {
         },
       });
       if (userBooks) {
-        return res.status(200).json(userBooks);
+        const userBooksWithGenreName = await Promise.all(
+          userBooks.map(async (b) => {
+            const genre = await prisma.genre.findUnique({
+              where: { id: b.genreId },
+            });
+            return { ...b, genre: genre?.genre };
+          }),
+        );
+        return res.status(200).json(userBooksWithGenreName);
       } else {
         return res.status(200).json({ message: 'No books found' });
       }
@@ -93,6 +104,31 @@ class BookController {
     }
   }
 
+  async getUserFavouriteBooks(req: Request, res: Response) {
+    try {
+      const { userId } = req.params;
+      const userFavouriteBooks = await prisma.book.findMany({
+        where: {
+          userId: userId,
+          favourite: true,
+        },
+      });
+      if (userFavouriteBooks) {
+        const userFavouriteBooksWithGenreName = await Promise.all(
+          userFavouriteBooks.map(async (b) => {
+            const genre = await prisma.genre.findUnique({
+              where: { id: b.genreId },
+            });
+            return { ...b, genre: genre?.genre };
+          }),
+        );
+        return res.status(200).json(userFavouriteBooksWithGenreName);
+      }
+    } catch (e) {
+      return res.status(400).json({ error: getErrorMessage(e) });
+    }
+  }
+
   async toggleBookFavourite(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -107,7 +143,12 @@ class BookController {
           favourite: newFavouriteValue,
         },
       });
-      return res.status(200).json(updatedBook);
+      if (updatedBook) {
+        const genre = await prisma.genre.findUnique({
+          where: { id: updatedBook.genreId },
+        });
+        return res.status(200).json({ ...updatedBook, genre: genre?.genre });
+      }
     } catch (e) {
       return res.status(400).json({ error: getErrorMessage(e) });
     }

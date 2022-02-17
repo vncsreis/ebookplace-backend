@@ -49,7 +49,12 @@ bookRouter.get('/user/:userId', bookController.getBooksByUserId);
 
 bookRouter.get('/genre/:genreId', bookController.getBooksByGenreId);
 
-bookRouter.get('/user/:userId/:genreId', bookController.getBooksByUserId);
+bookRouter.get(
+  '/user/:userId/genre/:genreId',
+  bookController.getUserBooksByGenreId,
+);
+
+bookRouter.get('/user/:userId/favourite', bookController.getUserFavouriteBooks);
 
 bookRouter.post(
   '/',
