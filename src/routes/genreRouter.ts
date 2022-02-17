@@ -5,6 +5,8 @@ export const genreRouter = Router();
 
 genreRouter.get('/', genreController.getGenres);
 
+genreRouter.get('/user/:userId', genreController.getUserGenres);
+
 genreRouter.get('/:id', genreController.getGenreById);
 
 genreRouter.post('/', genreController.createGenre);
