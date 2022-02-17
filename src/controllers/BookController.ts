@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../../prisma/client';
 import { BookCreateInfo, BookUpdateInfo } from '../models/BookInfoInput';
 import { getErrorMessage } from '../utilities/getErrorMessage';
+import fs from 'fs';
+import path from 'path';
 
 class BookController {
   async getBooks(req: Request, res: Response) {
@@ -185,6 +187,32 @@ class BookController {
           id,
         },
       });
+
+      const epubPath = path.join(
+        __dirname,
+        '..',
+        '..',
+        'uploads',
+        'epub',
+        deletedBook.epub,
+      );
+      const imagePath = path.join(
+        __dirname,
+        '..',
+        '..',
+        'uploads',
+        deletedBook.image,
+      );
+
+      fs.unlink(epubPath, (err) => {
+        if (err) throw err;
+      });
+
+      fs.unlink(imagePath, (err) => {
+        if (err) throw err;
+        console.log();
+      });
+
       if (deletedBook) {
         return res.status(200).json(deletedBook);
       } else {
