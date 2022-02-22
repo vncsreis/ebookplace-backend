@@ -80,7 +80,6 @@ class UserController {
   }
 
   async updatePassword(req: Request, res: Response) {
-    console.log('called');
     try {
       const { id } = req.params;
       const newPassword = req.body.password;
